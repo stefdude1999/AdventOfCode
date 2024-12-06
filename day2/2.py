@@ -27,17 +27,22 @@ parsed_data = parse_lines_to_lists(file_path)
 total = 0
 
 for line in parsed_data:
+    # Flag to avoid double counting
+    counted = False
+
     # Check the original list
     if check_differences(line) and (is_strictly_decreasing(line) or is_strictly_increasing(line)):
         total += 1
-        print(line)
+        print(f"Counted original list: {line}")
+        counted = True  # Mark as counted
 
     # Check sublists by removing one element
-    for j in range(len(line)):
-        sublist = line[:j] + line[j+1:]
-        if check_differences(sublist) and (is_strictly_decreasing(sublist) or is_strictly_increasing(sublist)):
-            total += 1
-            print(sublist)
-            break
+    if not counted:  # Only check sublists if the original wasn't counted
+        for j in range(len(line)):
+            sublist = line[:j] + line[j+1:]
+            if check_differences(sublist) and (is_strictly_decreasing(sublist) or is_strictly_increasing(sublist)):
+                total += 1
+                print(f"Counted sublist: {sublist} (removed {line[j]} at index {j})")
+                break  # Stop after finding one valid sublist
 
-print(total)
+print(f"Total safe reports: {total}")
